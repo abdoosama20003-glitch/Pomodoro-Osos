@@ -1,36 +1,44 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# FitForge | Premium Home Fitness System
+
+A state-of-the-art, comprehensive fitness tracking platform built with Next.js 15, Tailwind CSS v4, and Framer Motion. FitForge is designed to bring a premium, start-up level aesthetic (dark futuristic UI, glassmorphism) directly to your browser. 
+
+All user data is automatically and persistently saved in the browser via `localStorage`, ensuring your workouts, nutrition, habits, and weight logs are never lost.
+
+## Features
+
+- **Dynamic Dashboard**: View daily calorie consumption, hydration progress, weight tracking, and daily habits with an integrated streak counter and motivational content.
+- **Workout Tracking**: Follow structured workout programs, mark exercises as complete to maintain streaks, view built-in YouTube technique videos, and use the floating stopwatch for rest times.
+- **Nutrition & Hydration**: Add custom meals with exact calorie/protein counts, track water intake with quick-add buttons and a dynamic liquid progress visualization. You can also easily undo water additions or delete meals.
+- **Weight Analytics**: Log weight directly, compare against your target goal, and view your weight progression over time via beautiful Recharts graphs.
+- **Daily Discipline (Habits)**: Track and maintain daily essential habits (workout, walking, sleep, hydration, clean eating) featuring a beautiful circular completion ring and high-quality background imagery.
+- **Settings**: Fully customizable user profile, fitness metrics, and app preferences.
+
+## Tech Stack
+
+- **Framework**: Next.js 15 (App Router)
+- **Styling**: Tailwind CSS v4
+- **Animations**: Framer Motion
+- **Icons**: Lucide React
+- **Charts**: Recharts
+- **State Management**: React Context API + LocalStorage
+- **Language**: TypeScript
 
 ## Getting Started
 
-First, run the development server:
+First, install the dependencies:
+
+```bash
+npm install
+```
+
+Then, run the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Design Philosophy
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+The application utilizes a dark, cyberpunk-inspired futuristic design system. The aesthetics borrow heavily from premium platforms like Nike Training Club and Apple Fitness, featuring deep backgrounds (`#060816`), neon-tinted gradients, translucent glassmorphism panels, and high-quality photography instead of generic vectors.
