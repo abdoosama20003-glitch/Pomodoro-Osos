@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useFitness } from "@/context/FitnessContext";
 import { formatDate } from "@/lib/utils";
 import { motion } from "framer-motion";
-import { Droplet, Plus, Utensils, Flame, Coffee } from "lucide-react";
+import { Droplet, Plus, Trash2, Undo2 } from "lucide-react";
 
 export default function NutritionPage() {
   const { profile, nutritionDays, updateNutrition } = useFitness();
@@ -23,6 +23,19 @@ export default function NutritionPage() {
     e.preventDefault();
     if (!mealName || !calories) return;
 
+    // Pick a random food image for aesthetic purposes based on time
+    const foodImages = [
+      "https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&q=80&w=200&h=200", // salad
+      "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&q=80&w=200&h=200", // bowl
+      "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&q=80&w=200&h=200", // chicken
+      "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&q=80&w=200&h=200", // pizza/toast
+      "https://images.unsplash.com/photo-1493770348161-369560ae357d?auto=format&fit=crop&q=80&w=200&h=200"  // breakfast
+    ];
+    
+    // basic hash to pick image
+    const imageIndex = mealName.length % foodImages.length;
+    const selectedImage = foodImages[imageIndex];
+
     const newMeal = {
       id: Date.now().toString(),
       name: mealName,
@@ -31,7 +44,8 @@ export default function NutritionPage() {
       carbs: 0,
       fats: 0,
       time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      date: today
+      date: today,
+      image: selectedImage
     };
 
     updateNutrition(today, { 
@@ -41,6 +55,16 @@ export default function NutritionPage() {
     setMealName("");
     setCalories("");
     setProtein("");
+  };
+
+  const removeMeal = (id: string) => {
+    updateNutrition(today, {
+      meals: todayData.meals.filter(m => m.id !== id)
+    });
+  };
+
+  const removeWater = (amount: number) => {
+    updateNutrition(today, { waterMl: Math.max(0, todayData.waterMl - amount) });
   };
 
   const totalCalories = todayData.meals.reduce((sum, m) => sum + m.calories, 0);
@@ -110,7 +134,7 @@ export default function NutritionPage() {
           {/* Add Meal Form & History */}
           <div className="glass-card rounded-3xl p-6 md:p-8">
             <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
-              <Utensils className="w-6 h-6 text-orange-400" /> Today's Meals
+              Today's Meals
             </h2>
 
             <form onSubmit={addMeal} className="flex flex-col sm:flex-row gap-4 mb-8">
@@ -150,20 +174,36 @@ export default function NutritionPage() {
                   No meals logged today yet.
                 </div>
               ) : (
-                todayData.meals.map((meal) => (
-                  <div key={meal.id} className="bg-white/5 border border-white/10 rounded-2xl p-4 flex justify-between items-center group hover:bg-white/10 transition-colors">
+                todayData.meals.map((meal: any) => (
+                  <div key={meal.id} className="bg-white/5 border border-white/10 rounded-2xl p-4 flex justify-between items-center group transition-all duration-300 hover:bg-white/10">
                     <div className="flex items-center gap-4">
-                      <div className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-slate-400">
-                        {meal.time.includes('AM') ? <Coffee className="w-5 h-5" /> : <Utensils className="w-5 h-5" />}
-                      </div>
+                      {meal.image ? (
+                        <div 
+                          className="w-12 h-12 rounded-full bg-cover bg-center shrink-0 border border-white/10"
+                          style={{ backgroundImage: `url(${meal.image})` }}
+                        />
+                      ) : (
+                        <div className="w-12 h-12 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 shrink-0">
+                          <img src="https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&q=80&w=200&h=200" alt="Food" className="w-full h-full rounded-full object-cover opacity-80" />
+                        </div>
+                      )}
                       <div>
-                        <h4 className="font-bold text-white">{meal.name}</h4>
-                        <p className="text-xs text-slate-400">{meal.time}</p>
+                        <h4 className="font-bold text-white text-lg">{meal.name}</h4>
+                        <p className="text-xs text-slate-400 font-medium">{meal.time}</p>
                       </div>
                     </div>
-                    <div className="text-right">
-                      <p className="font-black text-orange-400">{meal.calories} kcal</p>
-                      {meal.protein > 0 && <p className="text-xs text-slate-400">{meal.protein}g protein</p>}
+                    <div className="flex items-center gap-4">
+                      <div className="text-right">
+                        <p className="font-black text-orange-400 text-lg">{meal.calories} kcal</p>
+                        {meal.protein > 0 && <p className="text-xs text-slate-300 font-medium">{meal.protein}g protein</p>}
+                      </div>
+                      <button 
+                        onClick={() => removeMeal(meal.id)}
+                        className="opacity-0 group-hover:opacity-100 p-2 text-red-400 hover:bg-red-400/20 rounded-xl transition-all"
+                        title="Delete Meal"
+                      >
+                        <Trash2 className="w-5 h-5" />
+                      </button>
                     </div>
                   </div>
                 ))
@@ -200,25 +240,54 @@ export default function NutritionPage() {
             </div>
           </div>
 
-          <div className="w-full space-y-3">
-            <button 
-              onClick={() => addWater(250)}
-              className="w-full bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/30 text-blue-400 py-3 rounded-xl font-bold transition-colors flex items-center justify-center gap-2"
-            >
-              <Droplet className="w-4 h-4" /> +250ml Glass
-            </button>
-            <button 
-              onClick={() => addWater(500)}
-              className="w-full bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/30 text-blue-400 py-3 rounded-xl font-bold transition-colors flex items-center justify-center gap-2"
-            >
-              <Droplet className="w-4 h-4" /> +500ml Bottle
-            </button>
-            <button 
-              onClick={() => addWater(1000)}
-              className="w-full bg-blue-500/20 hover:bg-blue-500/30 border border-blue-500/50 text-blue-400 py-3 rounded-xl font-black transition-colors shadow-lg shadow-blue-500/20"
-            >
-              +1L Large Jug
-            </button>
+          <div className="w-full space-y-3 relative z-10">
+            <div className="flex gap-2">
+              <button 
+                onClick={() => addWater(250)}
+                className="flex-1 bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/30 text-blue-400 py-3 rounded-xl font-bold transition-colors flex items-center justify-center gap-2"
+              >
+                <Droplet className="w-4 h-4" /> +250ml Glass
+              </button>
+              <button 
+                onClick={() => removeWater(250)}
+                className="bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 text-red-400 px-4 rounded-xl font-bold transition-colors flex items-center justify-center"
+                title="Undo 250ml"
+              >
+                <Undo2 className="w-4 h-4" />
+              </button>
+            </div>
+            
+            <div className="flex gap-2">
+              <button 
+                onClick={() => addWater(500)}
+                className="flex-1 bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/30 text-blue-400 py-3 rounded-xl font-bold transition-colors flex items-center justify-center gap-2"
+              >
+                <Droplet className="w-4 h-4" /> +500ml Bottle
+              </button>
+              <button 
+                onClick={() => removeWater(500)}
+                className="bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 text-red-400 px-4 rounded-xl font-bold transition-colors flex items-center justify-center"
+                title="Undo 500ml"
+              >
+                <Undo2 className="w-4 h-4" />
+              </button>
+            </div>
+
+            <div className="flex gap-2">
+              <button 
+                onClick={() => addWater(1000)}
+                className="flex-1 bg-blue-500/20 hover:bg-blue-500/30 border border-blue-500/50 text-blue-400 py-3 rounded-xl font-black transition-colors shadow-lg shadow-blue-500/20"
+              >
+                +1L Large Jug
+              </button>
+              <button 
+                onClick={() => removeWater(1000)}
+                className="bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 text-red-400 px-4 rounded-xl font-bold transition-colors flex items-center justify-center"
+                title="Undo 1L"
+              >
+                <Undo2 className="w-4 h-4" />
+              </button>
+            </div>
           </div>
         </div>
       </div>

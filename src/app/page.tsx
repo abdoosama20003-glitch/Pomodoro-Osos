@@ -224,7 +224,10 @@ export default function DashboardPage() {
               "The only bad workout is the one that didn't happen."
             </h3>
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-slate-800 border border-white/10"></div>
+              <div 
+                className="w-12 h-12 rounded-full bg-cover bg-center border border-white/20 shadow-lg"
+                style={{ backgroundImage: "url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&q=80&w=150&h=150')" }}
+              ></div>
               <div>
                 <p className="font-semibold text-sm">Coach Mike</p>
                 <p className="text-xs text-slate-400">Head Trainer</p>

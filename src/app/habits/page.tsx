@@ -24,7 +24,7 @@ export default function HabitsPage() {
       id: "workout",
       title: "Daily Workout",
       desc: "Complete your scheduled training",
-      icon: Dumbbell,
+      image: "https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&q=80&w=200&h=200",
       color: "text-cyan-400",
       bg: "bg-cyan-400/10",
       border: "border-cyan-400/20"
@@ -33,7 +33,7 @@ export default function HabitsPage() {
       id: "walking",
       title: "10,000 Steps",
       desc: "Stay active throughout the day",
-      icon: Footprints,
+      image: "https://images.unsplash.com/photo-1552674605-15c213624dc4?auto=format&fit=crop&q=80&w=200&h=200",
       color: "text-emerald-400",
       bg: "bg-emerald-400/10",
       border: "border-emerald-400/20"
@@ -42,7 +42,7 @@ export default function HabitsPage() {
       id: "sleep",
       title: "8 Hours Sleep",
       desc: "Proper recovery for muscle growth",
-      icon: Moon,
+      image: "https://images.unsplash.com/photo-1541781774459-bb2af2f05b55?auto=format&fit=crop&q=80&w=200&h=200",
       color: "text-violet-400",
       bg: "bg-violet-400/10",
       border: "border-violet-400/20"
@@ -51,7 +51,7 @@ export default function HabitsPage() {
       id: "water",
       title: "Hydration Goal",
       desc: "Drink 3L+ of water daily",
-      icon: Droplets,
+      image: "https://images.unsplash.com/photo-1548839140-29a749e1bc4e?auto=format&fit=crop&q=80&w=200&h=200",
       color: "text-blue-400",
       bg: "bg-blue-400/10",
       border: "border-blue-400/20"
@@ -60,7 +60,7 @@ export default function HabitsPage() {
       id: "healthyMeals",
       title: "Clean Eating",
       desc: "Hit your protein & calorie goals",
-      icon: Apple,
+      image: "https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&q=80&w=200&h=200",
       color: "text-orange-400",
       bg: "bg-orange-400/10",
       border: "border-orange-400/20"
@@ -136,10 +136,14 @@ export default function HabitsPage() {
                   : 'bg-white/5 border-white/5 hover:bg-white/10'
               }`}
             >
-              <div className={`w-14 h-14 rounded-2xl flex items-center justify-center border shrink-0 transition-colors ${
-                isCompleted ? `${habit.bg} ${habit.border}` : 'bg-black/30 border-white/10'
+              <div className={`w-16 h-16 rounded-2xl overflow-hidden shrink-0 transition-all duration-300 relative ${
+                isCompleted ? 'ring-2 ring-emerald-400 ring-offset-2 ring-offset-[#060816]' : 'opacity-70 grayscale hover:grayscale-0 hover:opacity-100'
               }`}>
-                <habit.icon className={`w-7 h-7 ${isCompleted ? habit.color : 'text-slate-500'}`} />
+                <div 
+                  className="absolute inset-0 bg-cover bg-center"
+                  style={{ backgroundImage: `url(${habit.image})` }}
+                />
+                {!isCompleted && <div className="absolute inset-0 bg-black/40"></div>}
               </div>
               
               <div className="flex-1">

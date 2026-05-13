@@ -24,6 +24,7 @@ interface FitnessContextType {
   updateNutrition: (date: string, updates: Partial<NutritionDay>) => void;
   weightHistory: WeightEntry[];
   logWeight: (entry: WeightEntry) => void;
+  removeWeight: (date: string) => void;
   habits: Record<string, DailyHabits>;
   updateHabit: (date: string, key: keyof Omit<DailyHabits, 'date'>, value: boolean) => void;
   goals: Goal[];
@@ -147,6 +148,17 @@ export function FitnessProvider({ children }: { children: React.ReactNode }) {
     updateProfile({ currentWeight: entry.weight });
   };
 
+  const removeWeight = (date: string) => {
+    setWeightHistory((prev) => {
+      const filtered = prev.filter((w) => w.date !== date);
+      // Update profile current weight to the last entry if exists
+      if (filtered.length > 0) {
+        updateProfile({ currentWeight: filtered[filtered.length - 1].weight });
+      }
+      return filtered;
+    });
+  };
+
   const updateHabit = (
     date: string,
     key: keyof Omit<DailyHabits, "date">,
@@ -195,6 +207,7 @@ export function FitnessProvider({ children }: { children: React.ReactNode }) {
         updateNutrition,
         weightHistory,
         logWeight,
+        removeWeight,
         habits,
         updateHabit,
         goals,

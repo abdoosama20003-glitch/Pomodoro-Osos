@@ -6,10 +6,10 @@ import { formatDate } from "@/lib/utils";
 import { 
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer 
 } from "recharts";
-import { Scale, TrendingDown, TrendingUp, Minus } from "lucide-react";
+import { Scale, TrendingDown, TrendingUp, Minus, Trash2 } from "lucide-react";
 
 export default function WeightPage() {
-  const { profile, weightHistory, logWeight } = useFitness();
+  const { profile, weightHistory, logWeight, removeWeight } = useFitness();
   const [weightInput, setWeightInput] = useState("");
   const today = formatDate();
 
@@ -128,28 +128,53 @@ export default function WeightPage() {
         </div>
 
         {/* Log Form */}
-        <div className="glass-card p-6 rounded-3xl border border-violet-500/30 relative">
-          <h3 className="text-lg font-bold mb-4 text-violet-400">Log Today's Weight</h3>
-          <form onSubmit={handleLogWeight} className="space-y-4">
-            <div className="relative">
-              <input 
-                type="number" 
-                step="0.1"
-                placeholder="Enter weight..." 
-                className="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-4 text-xl focus:outline-none focus:border-violet-400 transition-colors"
-                value={weightInput}
-                onChange={(e) => setWeightInput(e.target.value)}
-                required
-              />
-              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold">kg</span>
+        <div className="glass-card p-6 rounded-3xl border border-violet-500/30 relative flex flex-col justify-between">
+          <div>
+            <h3 className="text-lg font-bold mb-4 text-violet-400">Log Today's Weight</h3>
+            <form onSubmit={handleLogWeight} className="space-y-4">
+              <div className="relative">
+                <input 
+                  type="number" 
+                  step="0.1"
+                  placeholder="Enter weight..." 
+                  className="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-4 text-xl focus:outline-none focus:border-violet-400 transition-colors"
+                  value={weightInput}
+                  onChange={(e) => setWeightInput(e.target.value)}
+                  required
+                />
+                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold">kg</span>
+              </div>
+              <button 
+                type="submit" 
+                className="w-full bg-violet-500 hover:bg-violet-400 text-white py-4 rounded-xl font-bold transition-colors shadow-lg shadow-violet-500/20"
+              >
+                Save Entry
+              </button>
+            </form>
+          </div>
+
+          {weightHistory.length > 0 && (
+            <div className="mt-6 pt-6 border-t border-white/10">
+              <h4 className="text-sm font-bold text-slate-400 mb-3">Recent Logs</h4>
+              <div className="space-y-2 max-h-32 overflow-y-auto pr-2">
+                {[...weightHistory].reverse().slice(0, 3).map((entry) => (
+                  <div key={entry.date} className="flex justify-between items-center bg-white/5 p-3 rounded-xl group hover:bg-white/10 transition-colors">
+                    <span className="text-slate-300 text-sm font-medium">{entry.date}</span>
+                    <div className="flex items-center gap-3">
+                      <span className="font-bold text-violet-400">{entry.weight} kg</span>
+                      <button 
+                        onClick={() => removeWeight(entry.date)}
+                        className="opacity-0 group-hover:opacity-100 text-red-400 hover:text-red-300 transition-opacity"
+                        title="Delete log"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
-            <button 
-              type="submit" 
-              className="w-full bg-violet-500 hover:bg-violet-400 text-white py-4 rounded-xl font-bold transition-colors shadow-lg shadow-violet-500/20"
-            >
-              Save Entry
-            </button>
-          </form>
+          )}
         </div>
       </div>
 
