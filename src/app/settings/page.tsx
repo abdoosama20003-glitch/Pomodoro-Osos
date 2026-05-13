@@ -12,10 +12,14 @@ export default function SettingsPage() {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
+    const newValue = name === 'name' || name === 'equipment' ? value : Number(value);
     setFormData(prev => ({
       ...prev,
-      [name]: name === 'name' || name === 'equipment' ? value : Number(value)
+      [name]: newValue
     }));
+    updateProfile({ [name]: newValue });
+    setSaved(true);
+    setTimeout(() => setSaved(false), 2000);
   };
 
   const handleSubmit = (e: React.FormEvent) => {

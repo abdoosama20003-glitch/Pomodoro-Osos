@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { BookOpen, Plus, CheckCircle2, Circle, GraduationCap, Library, Trash2 } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -12,13 +12,40 @@ interface StudyTask {
 }
 
 export default function StudyPage() {
-  const [tasks, setTasks] = useState<StudyTask[]>([
-    { id: "1", title: "Read Chapter 4: React Context", subject: "Programming", completed: false },
-    { id: "2", title: "Complete Math Assignment", subject: "Mathematics", completed: true },
-    { id: "3", title: "Review UI/UX Guidelines", subject: "Design", completed: false },
-  ]);
+  const [tasks, setTasks] = useState<StudyTask[]>([]);
   const [newTaskTitle, setNewTaskTitle] = useState("");
   const [newTaskSubject, setNewTaskSubject] = useState("");
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    const saved = localStorage.getItem("fitforge_study_tasks");
+    if (saved) {
+      try {
+        setTasks(JSON.parse(saved));
+      } catch (e) {}
+    } else {
+      setTasks([
+        { id: "1", title: "Read Chapter 4: React Context", subject: "Programming", completed: false },
+        { id: "2", title: "Complete Math Assignment", subject: "Mathematics", completed: true },
+        { id: "3", title: "Review UI/UX Guidelines", subject: "Design", completed: false },
+      ]);
+    }
+    
+    const savedTitle = localStorage.getItem("fitforge_study_input_title");
+    if (savedTitle) setNewTaskTitle(savedTitle);
+    const savedSubj = localStorage.getItem("fitforge_study_input_subject");
+    if (savedSubj) setNewTaskSubject(savedSubj);
+
+    setIsMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (isMounted) {
+      localStorage.setItem("fitforge_study_tasks", JSON.stringify(tasks));
+      localStorage.setItem("fitforge_study_input_title", newTaskTitle);
+      localStorage.setItem("fitforge_study_input_subject", newTaskSubject);
+    }
+  }, [tasks, newTaskTitle, newTaskSubject, isMounted]);
 
   const toggleTask = (id: string) => {
     setTasks(tasks.map(t => t.id === id ? { ...t, completed: !t.completed } : t));

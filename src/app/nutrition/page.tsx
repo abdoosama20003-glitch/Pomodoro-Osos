@@ -15,6 +15,21 @@ export default function NutritionPage() {
   const [calories, setCalories] = useState("");
   const [protein, setProtein] = useState("");
 
+  useEffect(() => {
+    const sn = localStorage.getItem("fitforge_nutri_name");
+    const sc = localStorage.getItem("fitforge_nutri_cal");
+    const sp = localStorage.getItem("fitforge_nutri_pro");
+    if (sn) setMealName(sn);
+    if (sc) setCalories(sc);
+    if (sp) setProtein(sp);
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("fitforge_nutri_name", mealName);
+    localStorage.setItem("fitforge_nutri_cal", calories);
+    localStorage.setItem("fitforge_nutri_pro", protein);
+  }, [mealName, calories, protein]);
+
   const addWater = (amount: number) => {
     updateNutrition(today, { waterMl: todayData.waterMl + amount });
   };

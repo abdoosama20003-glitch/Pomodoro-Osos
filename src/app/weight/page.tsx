@@ -13,6 +13,15 @@ export default function WeightPage() {
   const [weightInput, setWeightInput] = useState("");
   const today = formatDate();
 
+  useEffect(() => {
+    const sw = localStorage.getItem("fitforge_weight_input");
+    if (sw) setWeightInput(sw);
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("fitforge_weight_input", weightInput);
+  }, [weightInput]);
+
   // Create mock data if history is empty for demonstration purposes
   const chartData = weightHistory.length > 0 
     ? weightHistory 

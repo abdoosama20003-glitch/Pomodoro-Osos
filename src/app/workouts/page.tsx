@@ -8,14 +8,34 @@ import { useFitness } from "@/context/FitnessContext";
 import { Exercise, WorkoutDay } from "@/lib/types";
 
 export default function WorkoutsPage() {
-  const { workoutDays, updateWorkoutDays, isMounted } = useFitness();
+  const { workoutDays, updateWorkoutDays, isMounted: contextMounted } = useFitness();
   const [expandedDay, setExpandedDay] = useState<number | null>(0);
   const [completedExercises, setCompletedExercises] = useState<Record<string, boolean>>({});
   
   const [isEditing, setIsEditing] = useState(false);
   const [editState, setEditState] = useState<WorkoutDay[]>([]);
+  const [isMounted, setIsMounted] = useState(false);
 
-  if (!isMounted) return null;
+  useEffect(() => {
+    const savedCompleted = localStorage.getItem("fitforge_completed_exercises");
+    if (savedCompleted) {
+      try { setCompletedExercises(JSON.parse(savedCompleted)); } catch (e) {}
+    }
+    const savedExpanded = localStorage.getItem("fitforge_expanded_day");
+    if (savedExpanded) {
+      try { setExpandedDay(JSON.parse(savedExpanded)); } catch (e) {}
+    }
+    setIsMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (isMounted) {
+      localStorage.setItem("fitforge_completed_exercises", JSON.stringify(completedExercises));
+      localStorage.setItem("fitforge_expanded_day", JSON.stringify(expandedDay));
+    }
+  }, [completedExercises, expandedDay, isMounted]);
+
+  if (!contextMounted || !isMounted) return null;
 
   const toggleExercise = (dayIndex: number, exerciseIndex: number) => {
     if (isEditing) return;
