@@ -199,7 +199,7 @@ export default function PomodoroPage() {
       </div>
 
       {/* Hidden ReactPlayer */}
-      <div className="hidden">
+      <div className="fixed -top-[9999px] -left-[9999px] w-[1px] h-[1px] opacity-0 pointer-events-none overflow-hidden">
         {musicType !== "none" && activeMediaUrl && (
           <Player 
             ref={playerRef}
@@ -209,9 +209,14 @@ export default function PomodoroPage() {
             muted={mediaMuted}
             onProgress={(p: any) => setMediaPlayed(p.played)}
             onDuration={(d: number) => setMediaDuration(d)}
-            width="0"
-            height="0"
+            width="10"
+            height="10"
             playsinline
+            config={{
+              youtube: {
+                playerVars: { autoplay: 1 }
+              }
+            }}
           />
         )}
       </div>
@@ -311,8 +316,22 @@ export default function PomodoroPage() {
                    </button>
                 </div>
                 
-                {/* Spacer to balance the flex-between layout */}
-                <div className="w-[100px] flex justify-end">
+                {/* Download Button */}
+                <div className="flex items-center gap-2">
+                   <a 
+                     href={musicType === 'youtube' && youtubeUrl ? youtubeUrl.replace('youtube.com', 'ssyoutube.com') : (activeMediaUrl || '#')} 
+                     target="_blank" 
+                     rel="noreferrer"
+                     download={musicType === 'file' ? 'audio_file' : undefined}
+                     className={`p-2 rounded-xl transition-all border ${
+                       musicType === 'youtube' 
+                         ? 'bg-red-500/10 border-red-500/20 text-red-400 hover:bg-red-500/20 hover:text-white' 
+                         : 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400 hover:bg-emerald-500/20 hover:text-white'
+                     }`}
+                     title="Download Media"
+                   >
+                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-download"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+                   </a>
                 </div>
               </div>
             </div>
