@@ -1,8 +1,10 @@
-const { app, BrowserWindow } = require("electron");
-const serve = require("electron-serve");
+const { app, BrowserWindow, protocol, net } = require("electron");
 const path = require("path");
 
-const appServe = app.isPackaged ? serve({ directory: path.join(__dirname, "out") }) : null;
+// Register custom protocol
+protocol.registerSchemesAsPrivileged([
+  { scheme: 'app', privileges: { secure: true, standard: true, supportFetchAPI: true, bypassCSP: true } }
+]);
 
 const createWindow = () => {
   const win = new BrowserWindow({
@@ -12,24 +14,20 @@ const createWindow = () => {
       nodeIntegration: true,
       contextIsolation: false,
     },
-    titleBarStyle: "hidden", // Makes it look native
+    titleBarStyle: "hidden", 
     titleBarOverlay: {
-      color: "#0f172a", // Match Tailwind slate-900
+      color: "#0f172a", 
       symbolColor: "#ffffff",
     },
-    backgroundColor: "#020617", // Match Tailwind slate-950
+    backgroundColor: "#020617", 
   });
 
   if (app.isPackaged) {
-    appServe(win).then(() => {
-      win.loadURL("app://-");
-    });
+    win.loadURL("app://-/");
   } else {
-    // In development, Next.js typically runs on port 3000
     win.loadURL("http://localhost:3000");
     win.webContents.openDevTools();
     
-    // Add reload listener
     win.webContents.on("did-fail-load", (e, code, desc) => {
       win.webContents.reloadIgnoringCache();
     });
@@ -37,6 +35,23 @@ const createWindow = () => {
 };
 
 app.whenReady().then(() => {
+  protocol.handle('app', (request) => {
+    let url = request.url.slice('app://-'.length);
+    if (url.startsWith('/')) {
+      url = url.slice(1);
+    }
+    
+    let relativePath = url;
+    if (!url || url === '') {
+      relativePath = 'index.html';
+    } else if (!path.extname(url)) {
+      relativePath = url + '.html';
+    }
+
+    const absolutePath = path.join(__dirname, 'out', relativePath);
+    return net.fetch('file://' + absolutePath);
+  });
+
   createWindow();
 
   app.on("activate", () => {
