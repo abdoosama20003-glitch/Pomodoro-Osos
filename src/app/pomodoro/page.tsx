@@ -199,7 +199,7 @@ export default function PomodoroPage() {
       </div>
 
       {/* Hidden ReactPlayer */}
-      <div className="fixed -top-[9999px] -left-[9999px] w-[1px] h-[1px] opacity-0 pointer-events-none overflow-hidden">
+      <div className="absolute inset-0 opacity-0 pointer-events-none z-0 overflow-hidden flex items-center justify-center">
         {musicType !== "none" && activeMediaUrl && (
           <Player 
             ref={playerRef}
@@ -209,14 +209,20 @@ export default function PomodoroPage() {
             muted={mediaMuted}
             onProgress={(p: any) => setMediaPlayed(p.played)}
             onDuration={(d: number) => setMediaDuration(d)}
-            width="10"
-            height="10"
+            width="100%"
+            height="100%"
             playsinline
             config={{
               youtube: {
-                playerVars: { autoplay: 1 }
+                playerVars: { 
+                  autoplay: 1,
+                  controls: 0,
+                  disablekb: 1,
+                }
               }
             }}
+            onReady={() => console.log('Player ready')}
+            onError={(e: any) => console.log('Player error', e)}
           />
         )}
       </div>
