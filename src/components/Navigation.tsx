@@ -8,7 +8,9 @@ import {
   Apple, 
   Scale, 
   CheckCircle,
-  Settings
+  Settings,
+  Timer,
+  BookOpen
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
@@ -19,6 +21,8 @@ const navItems = [
   { name: "Nutrition", href: "/nutrition", icon: Apple },
   { name: "Weight", href: "/weight", icon: Scale },
   { name: "Habits", href: "/habits", icon: CheckCircle },
+  { name: "Pomodoro", href: "/pomodoro", icon: Timer },
+  { name: "Study", href: "/study", icon: BookOpen },
 ];
 
 export default function Navigation() {

@@ -9,8 +9,9 @@ import {
   WeightEntry,
   DailyHabits,
   Goal,
+  WorkoutDay,
 } from "@/lib/types";
-import { defaultUserProfile, defaultSettings, defaultGoals } from "@/lib/defaultData";
+import { defaultUserProfile, defaultSettings, defaultGoals, defaultWorkoutDays } from "@/lib/defaultData";
 import { safeLocalStorageGet, safeLocalStorageSet, formatDate } from "@/lib/utils";
 
 interface FitnessContextType {
@@ -31,6 +32,8 @@ interface FitnessContextType {
   addGoal: (goal: Goal) => void;
   updateGoal: (id: string, updates: Partial<Goal>) => void;
   deleteGoal: (id: string) => void;
+  workoutDays: WorkoutDay[];
+  updateWorkoutDays: (days: WorkoutDay[]) => void;
   isMounted: boolean;
 }
 
@@ -47,6 +50,7 @@ export function FitnessProvider({ children }: { children: React.ReactNode }) {
   const [weightHistory, setWeightHistory] = useState<WeightEntry[]>([]);
   const [habits, setHabits] = useState<Record<string, DailyHabits>>({});
   const [goals, setGoals] = useState<Goal[]>(defaultGoals);
+  const [workoutDays, setWorkoutDays] = useState<WorkoutDay[]>(defaultWorkoutDays);
 
   // Load from localStorage on mount
   useEffect(() => {
@@ -57,6 +61,7 @@ export function FitnessProvider({ children }: { children: React.ReactNode }) {
     setWeightHistory(safeLocalStorageGet("fitforge_weight", []));
     setHabits(safeLocalStorageGet("fitforge_habits", {}));
     setGoals(safeLocalStorageGet("fitforge_goals", defaultGoals));
+    setWorkoutDays(safeLocalStorageGet("fitforge_workoutDays", defaultWorkoutDays));
     setIsMounted(true);
   }, []);
 
@@ -101,6 +106,11 @@ export function FitnessProvider({ children }: { children: React.ReactNode }) {
     if (!isMounted) return;
     safeLocalStorageSet("fitforge_goals", goals);
   }, [goals, isMounted]);
+
+  useEffect(() => {
+    if (!isMounted) return;
+    safeLocalStorageSet("fitforge_workoutDays", workoutDays);
+  }, [workoutDays, isMounted]);
 
   // Actions
   const updateProfile = (updates: Partial<UserProfile>) => {
@@ -194,6 +204,10 @@ export function FitnessProvider({ children }: { children: React.ReactNode }) {
     setGoals((prev) => prev.filter((g) => g.id !== id));
   };
 
+  const updateWorkoutDays = (days: WorkoutDay[]) => {
+    setWorkoutDays(days);
+  };
+
   return (
     <FitnessContext.Provider
       value={{
@@ -214,6 +228,8 @@ export function FitnessProvider({ children }: { children: React.ReactNode }) {
         addGoal,
         updateGoal,
         deleteGoal,
+        workoutDays,
+        updateWorkoutDays,
         isMounted,
       }}
     >

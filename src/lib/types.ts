@@ -3,15 +3,17 @@
 // ============================================================
 
 export interface Exercise {
+  id?: string;
   name: string;
   video: string;
   description?: string;
-  sets?: number;
+  sets?: number | string;
   reps?: string;
   completed?: boolean;
 }
 
 export interface WorkoutDay {
+  id?: string;
   day: string;
   title: string;
   image: string;
