@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useFitness } from "@/context/FitnessContext";
 import { formatDate } from "@/lib/utils";
 import { 

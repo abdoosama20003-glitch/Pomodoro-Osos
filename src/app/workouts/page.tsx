@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { CheckCircle2, Circle, PlayCircle, ChevronDown, ChevronUp, Edit2, Plus, Trash2, Save, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Stopwatch from "@/components/Stopwatch";
